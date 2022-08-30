@@ -1,7 +1,8 @@
 """Generate Markov text from text files."""
 
-from random import choice
+import sys
 
+from random import choice
 
 def open_and_read_file(file_path):
     """Take file path as string; return text as string.
@@ -60,20 +61,28 @@ def make_chains(text_string):
 def make_text(chains):
     """Return text from chains."""
 
-    words = []
+
+    bigrams = list(chains.keys())
+    bigram = choice(bigrams)
+
+    words = [bigram[0], bigram[1]]
+
+    while bigram in chains: 
+        word = choice(chains[bigram])
+        words.append(word)
+        bigram = (bigram[1], word)
 
     return ' '.join(words)
 
+file_path = sys.argv[1]
 
-input_path = 'green-eggs.txt'
+# # Open the file and turn it into one long string
+input_text = open_and_read_file(file_path)
 
-# Open the file and turn it into one long string
-input_text = open_and_read_file(input_path)
-
-# Get a Markov chain
+# # Get a Markov chain
 chains = make_chains(input_text)
 
-# Produce random text
+# # Produce random text
 random_text = make_text(chains)
 
 print(random_text)
